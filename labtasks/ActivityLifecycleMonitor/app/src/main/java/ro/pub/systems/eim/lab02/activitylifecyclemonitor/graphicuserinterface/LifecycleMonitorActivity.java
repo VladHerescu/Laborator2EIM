@@ -1,5 +1,6 @@
 package ro.pub.systems.eim.lab02.activitylifecyclemonitor.graphicuserinterface;
 
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,6 +8,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.PopupWindow;
 
@@ -56,13 +58,90 @@ public class LifecycleMonitorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lifecycle_monitor);
-
+        if (savedInstanceState == null) {
+            Log.println (Log.DEBUG, "activity_lifecycle", "this is on create, with no previous state");
+        } else {
+            Log.println (Log.DEBUG, "activity_lifecycle", "this is on create, with a previous state");
+            if (savedInstanceState.containsKey(Constants.USERNAME_EDIT_TEXT)) {
+                EditText usernameEditText = (EditText)findViewById(R.id.username_edit_text);
+                usernameEditText.setText(savedInstanceState.getString(Constants.USERNAME_EDIT_TEXT));
+            }
+            if (savedInstanceState.containsKey(Constants.PASSWORD_EDIT_TEXT)) {
+                EditText passwordEditText = (EditText)findViewById(R.id.password_edit_text);
+                passwordEditText.setText(savedInstanceState.getString(Constants.PASSWORD_EDIT_TEXT));
+            }
+            if (savedInstanceState.containsKey(Constants.REMEMBER_ME_CHECKBOX)) {
+                CheckBox rememberMeCheckBox = (CheckBox) findViewById(R.id.remember_me_checkbox);
+                rememberMeCheckBox.setChecked(savedInstanceState.getBoolean(Constants.REMEMBER_ME_CHECKBOX));
+            }
+        }
         Button okButton = (Button) findViewById(R.id.ok_button);
         okButton.setOnClickListener(buttonClickListener);
         Button cancelButton = (Button) findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(buttonClickListener);
+    }
 
-        Log.d(Constants.TAG, "onCreate() method was invoked without a previous state");
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Log.println(Log.DEBUG, "activity lifecycle", "inside onSaveInstanceState");
+        EditText username = (EditText)findViewById(R.id.username_edit_text);
+        EditText password = (EditText)findViewById(R.id.password_edit_text);
+        CheckBox storeStateCheckbox = (CheckBox)findViewById(R.id.remember_me_checkbox);
+        if (storeStateCheckbox.isChecked()) {
+            savedInstanceState.putString(Constants.USERNAME_EDIT_TEXT, username.getText().toString());
+            savedInstanceState.putString(Constants.PASSWORD_EDIT_TEXT, password.getText().toString());
+            savedInstanceState.putBoolean(Constants.REMEMBER_ME_CHECKBOX, storeStateCheckbox.isChecked());
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.println(Log.DEBUG, "activity lifecycle", "inside onRestoreInstanceState");
+        if (savedInstanceState.containsKey(Constants.USERNAME_EDIT_TEXT)) {
+            EditText usernameEditText = (EditText)findViewById(R.id.username_edit_text);
+            usernameEditText.setText(savedInstanceState.getString(Constants.USERNAME_EDIT_TEXT));
+        }
+        if (savedInstanceState.containsKey(Constants.PASSWORD_EDIT_TEXT)) {
+            EditText passwordEditText = (EditText)findViewById(R.id.password_edit_text);
+            passwordEditText.setText(savedInstanceState.getString(Constants.PASSWORD_EDIT_TEXT));
+        }
+        if (savedInstanceState.containsKey(Constants.REMEMBER_ME_CHECKBOX)) {
+            CheckBox rememberMeCheckBox = (CheckBox) findViewById(R.id.remember_me_checkbox);
+            rememberMeCheckBox.setChecked(savedInstanceState.getBoolean(Constants.REMEMBER_ME_CHECKBOX));
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.println (Log.DEBUG, "activity_lifecycle", "this is on start");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.println (Log.DEBUG, "activity_lifecycle", "this is on resume");
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.println (Log.DEBUG, "activity_lifecycle", "this is on pause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.println (Log.DEBUG, "activity_lifecycle", "this is on stop");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.println (Log.DEBUG, "activity lifecycle", "this is on destroy");
     }
 
 }
